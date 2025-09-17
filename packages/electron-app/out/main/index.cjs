@@ -150,22 +150,19 @@ async function startPtyProcess(mainWindow) {
       }
     }
   }
-  const envToPass = {
-    ...process.env,
-    ...env,
-    ELECTRON_RUN_AS_NODE: "1",
-    GEMINI_CLI_CONTEXT: "electron",
-    GEMINI_SESSION_ID: sessionId
-  };
-  console.log("!!!!!");
-  console.log(envToPass);
   try {
     ptyProcess = pty__namespace.spawn(cliPath, [], {
       name: "xterm-color",
       cols: 80,
       rows: 30,
       cwd: terminalCwd,
-      env: envToPass
+      env: {
+        ...process.env,
+        ...env,
+        ELECTRON_RUN_AS_NODE: "1",
+        GEMINI_CLI_CONTEXT: "electron",
+        GEMINI_SESSION_ID: sessionId
+      }
     });
     const outputBuffer = [];
     ptyProcess.onExit(({ exitCode, signal }) => {
