@@ -125,12 +125,13 @@ export function setupUnhandledRejectionHandler() {
 This is an unexpected error. Please file a bug report using the /bug tool.
 CRITICAL: Unhandled Promise Rejection!
 =========================================
-Reason: ${reason}${reason instanceof Error && reason.stack
+Reason: ${reason}${
+      reason instanceof Error && reason.stack
         ? `
 Stack trace:
 ${reason.stack}`
         : ''
-      }`;
+    }`;
     appEvents.emit(AppEvent.LogError, errorMessage);
     if (!unhandledRejectionOccurred) {
       unhandledRejectionOccurred = true;
@@ -214,15 +215,10 @@ export async function main() {
     argv,
   );
 
-  let wasRaw = process.stdin.isRaw;
-  console.log('!!!!!');
-  console.log(wasRaw);
-  wasRaw = false;
+  const wasRaw = process.stdin.isRaw;
 
   let kittyProtocolDetectionComplete: Promise<boolean> | undefined;
   if (config.isInteractive() && !wasRaw) {
-
-    console.log('interactive !!!');
     // Set this as early as possible to avoid spurious characters from
     // input showing up in the output.
     process.stdin.setRawMode(true);
@@ -369,7 +365,7 @@ export async function main() {
 
   if (
     settings.merged.security?.auth?.selectedType ===
-    AuthType.LOGIN_WITH_GOOGLE &&
+      AuthType.LOGIN_WITH_GOOGLE &&
     config.isBrowserLaunchSuppressed()
   ) {
     // Do oauth before app renders to make copying the link possible.
@@ -388,6 +384,7 @@ export async function main() {
 
   // Render UI, passing necessary config values. Check that there is no command line question.
   if (config.isInteractive()) {
+    console.log('!!! interactive !!!');
     // Need kitty detection to be complete before we can start the interactive UI.
     await kittyProtocolDetectionComplete;
     await startInteractiveUI(
@@ -399,6 +396,7 @@ export async function main() {
     );
     return;
   }
+  console.log('!!! non-interactive !!!');
 
   await config.initialize();
 
