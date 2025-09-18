@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _sendMessage(String message) {
-    _onUserMessage.sink.add('$message\n');
+    _onUserMessage.sink.add('$message\r\n\r\n');
   }
 
   @override

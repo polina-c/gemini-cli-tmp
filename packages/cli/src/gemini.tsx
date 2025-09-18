@@ -277,6 +277,7 @@ export async function main() {
   }
 
   console.log('!!! check - 4 !!!');
+  process.stdout.write('!!! check - 4 !!!');
 
   if (config.getListExtensions()) {
     console.log('Installed extensions:');

@@ -91,6 +91,7 @@ export async function runNonInteractive(
 
         if (event.type === GeminiEventType.Content) {
           process.stdout.write(event.value);
+          process.stdout.write(`!!! writing event: ${event.value}`);
         } else if (event.type === GeminiEventType.ToolCallRequest) {
           toolCallRequests.push(event.value);
         }
@@ -117,6 +118,7 @@ export async function runNonInteractive(
         }
         currentMessages = [{ role: 'user', parts: toolResponseParts }];
       } else {
+        console.log('!!! line end');
         process.stdout.write('\n'); // Ensure a final newline
         return;
       }

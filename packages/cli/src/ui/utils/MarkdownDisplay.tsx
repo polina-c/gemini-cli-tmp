@@ -33,6 +33,7 @@ const MarkdownDisplayInternal: React.FC<MarkdownDisplayProps> = ({
   availableTerminalHeight,
   terminalWidth,
 }) => {
+  console.log('!!! MarkdownDisplayInternal !!!');
   if (!text) return <></>;
 
   const lines = text.split(EOL);

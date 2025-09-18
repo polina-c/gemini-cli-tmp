@@ -384,12 +384,14 @@ export function KeypressProvider({
     };
 
     const broadcast = (key: Key) => {
+      console.log('!!!! broadcast', key);
       for (const handler of subscribers) {
         handler(key);
       }
     };
 
     const handleKeypress = (_: unknown, key: Key) => {
+      console.log('!!!! GEMINI CLI INTERACTIVE KEYPRESS:', key);
       console.log('!!!! handleKeypress', key);
       if (key.name === 'paste-start') {
         isPaste = true;
@@ -674,6 +676,7 @@ export function KeypressProvider({
     }
 
     return () => {
+      console.log('!!!! if (usePassthrough) {');
       if (usePassthrough) {
         keypressStream.removeListener('keypress', handleKeypress);
         stdin.removeListener('data', handleRawKeypress);

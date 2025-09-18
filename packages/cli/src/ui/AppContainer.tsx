@@ -265,6 +265,7 @@ export const AppContainer = (props: AppContainerProps) => {
 
   const refreshStatic = useCallback(() => {
     stdout.write(ansiEscapes.clearTerminal);
+    console.log('!!! refreshStatic !!!');
     setHistoryRemountKey((prev) => prev + 1);
   }, [setHistoryRemountKey, stdout]);
 
