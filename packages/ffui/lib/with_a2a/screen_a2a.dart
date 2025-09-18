@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ffui/primitives/chat_box.dart';
+import 'package:ffui/with_a2a/a2a.dart';
 import 'package:flutter/material.dart';
 
 import '../with_process/process.dart';
@@ -15,7 +16,7 @@ class ChatWithA2A extends StatefulWidget {
 }
 
 class _ChatWithA2AState extends State<ChatWithA2A> {
-  late final _gcli = GeminiCliProcess(_updateStatus, _onUserMessage.stream);
+  late final _gcli = A2aToGeminiCli(_updateStatus, _onUserMessage.stream);
   final _status = ValueNotifier<String>('');
   final _scrollController = ScrollController();
   final _onUserMessage = StreamController<String>.broadcast();
