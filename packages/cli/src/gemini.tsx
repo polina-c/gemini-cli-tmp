@@ -104,6 +104,8 @@ function getNodeMemoryArgs(config: Config): string[] {
 }
 
 async function relaunchWithAdditionalArgs(additionalArgs: string[]) {
+  console.log('!!! relaunchWithAdditionalArgs !!!');
+
   const nodeArgs = [...additionalArgs, ...process.argv.slice(1)];
   const newEnv = { ...process.env, GEMINI_CLI_NO_RELAUNCH: 'true' };
 
@@ -147,11 +149,13 @@ export async function startInteractiveUI(
   workspaceRoot: string = process.cwd(),
   initializationResult: InitializationResult,
 ) {
+  console.log('!!! Starting interactive UI !!!');
   const version = await getCliVersion();
   setWindowTitle(basename(workspaceRoot), settings);
 
   // Create wrapper component to use hooks inside render
   const AppWrapper = () => {
+    console.log('!!! AppWrapper !!! no');
     const kittyProtocolStatus = useKittyKeyboardProtocol();
     return (
       <SettingsContext.Provider value={settings}>
@@ -175,7 +179,7 @@ export async function startInteractiveUI(
       </SettingsContext.Provider>
     );
   };
-
+  console.log('!!! instance = render !!!');
   const instance = render(
     <React.StrictMode>
       <AppWrapper />
@@ -215,7 +219,15 @@ export async function main() {
     argv,
   );
 
+  const consolePatcher = new ConsolePatcher({
+    stderr: true,
+    debugMode: config.getDebugMode(),
+  });
+  consolePatcher.patch();
+
   const wasRaw = process.stdin.isRaw;
+
+  console.log('!!! wasRaw !!!', { wasRaw });
 
   let kittyProtocolDetectionComplete: Promise<boolean> | undefined;
   if (config.isInteractive() && !wasRaw) {
@@ -225,7 +237,7 @@ export async function main() {
 
     // process.stdin.setRawMode(true);
 
-    // console.log('!!! done');
+    //
 
     // // This cleanup isn't strictly needed but may help in certain situations.
     // process.on('SIGTERM', () => {
@@ -248,11 +260,9 @@ export async function main() {
     });
   }
 
-  const consolePatcher = new ConsolePatcher({
-    stderr: true,
-    debugMode: config.getDebugMode(),
-  });
-  consolePatcher.patch();
+  console.log('!!! check - 6 !!!');
+
+  console.log('!!! check - 5 !!!');
   registerCleanup(consolePatcher.cleanup);
 
   dns.setDefaultResultOrder(
@@ -265,6 +275,8 @@ export async function main() {
     );
     process.exit(1);
   }
+
+  console.log('!!! check - 4 !!!');
 
   if (config.getListExtensions()) {
     console.log('Installed extensions:');
@@ -285,6 +297,8 @@ export async function main() {
     }
   }
 
+  console.log('!!! check - 3 !!!');
+
   setMaxSizedBoxDebugging(config.getDebugMode());
 
   // Load custom themes from settings
@@ -298,15 +312,19 @@ export async function main() {
     }
   }
 
+  console.log('!!! check - 2 !!!');
+
   const initializationResult = await initializeApp(config, settings);
 
   // hop into sandbox if we are outside and sandboxing is enabled
   if (!process.env['SANDBOX']) {
+    console.log('!!! no sandbox !!!');
     const memoryArgs = settings.merged.advanced?.autoConfigureMemory
       ? getNodeMemoryArgs(config)
       : [];
     const sandboxConfig = config.getSandbox();
     if (sandboxConfig) {
+      console.log('!!! Entering sandboxed environment...');
       if (
         settings.merged.security?.auth?.selectedType &&
         !settings.merged.security?.auth?.useExternal
@@ -328,6 +346,7 @@ export async function main() {
       let stdinData = '';
       if (!process.stdin.isTTY) {
         stdinData = await readStdin();
+        console.log('!!! stdinData !!!', stdinData);
       }
 
       // This function is a copy of the one from sandbox.ts
@@ -336,6 +355,8 @@ export async function main() {
         args: string[],
         stdinData?: string,
       ): string[] => {
+        console.log('!!! injectStdinIntoArgs !!!', args, stdinData);
+
         const finalArgs = [...args];
         if (stdinData) {
           const promptIndex = finalArgs.findIndex(
@@ -358,15 +379,17 @@ export async function main() {
       await start_sandbox(sandboxConfig, memoryArgs, config, sandboxArgs);
       process.exit(0);
     } else {
+      console.log('!!! sandbox no sandboxConfig !!!');
       // Not in a sandbox and not entering one, so relaunch with additional
       // arguments to control memory usage if needed.
       if (memoryArgs.length > 0) {
+        console.log('!!! relaunchWithAdditionalArgs !!!');
         await relaunchWithAdditionalArgs(memoryArgs);
         process.exit(0);
       }
     }
   }
-
+  console.log('!!! check - 1 !!!');
   if (
     settings.merged.security?.auth?.selectedType ===
       AuthType.LOGIN_WITH_GOOGLE &&
@@ -407,6 +430,7 @@ export async function main() {
   // If not a TTY, read from stdin
   // This is for cases where the user pipes input directly into the command
   if (!process.stdin.isTTY) {
+    console.log('!!! const stdinData = await readStdin(); !!!');
     const stdinData = await readStdin();
     if (stdinData) {
       input = `${stdinData}\n\n${input}`;

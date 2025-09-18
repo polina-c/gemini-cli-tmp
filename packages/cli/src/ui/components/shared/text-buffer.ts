@@ -1453,6 +1453,7 @@ export function useTextBuffer({
   isValidPath,
   shellModeActive = false,
 }: UseTextBufferProps): TextBuffer {
+  console.log('!!! Rendering useTextBuffer');
   const initialState = useMemo((): TextBufferState => {
     const lines = initialText.split('\n');
     const [initialCursorRow, initialCursorCol] = calculateInitialCursorPosition(

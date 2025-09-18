@@ -14,19 +14,26 @@ let protocolEnabled = false;
  * This function should be called once at app startup.
  */
 export async function detectAndEnableKittyProtocol(): Promise<boolean> {
+  console.log('!!! detectAndEnableKittyProtocol !!!');
   if (detectionComplete) {
     return protocolSupported;
   }
 
+  console.log('!!! kitty 1');
+
   return new Promise((resolve) => {
+    console.log('!!! kitty 2');
     if (!process.stdin.isTTY || !process.stdout.isTTY) {
       detectionComplete = true;
       resolve(false);
+
+      console.log('!!! kitty 3');
       return;
     }
-
+    console.log('!!! kitty 4');
     const originalRawMode = process.stdin.isRaw;
     if (!originalRawMode) {
+      console.log('!!! kitty 5');
       process.stdin.setRawMode(true);
     }
 
@@ -45,6 +52,7 @@ export async function detectAndEnableKittyProtocol(): Promise<boolean> {
     };
 
     const handleData = (data: Buffer) => {
+      console.log('!!! recieved data:', data);
       if (timeoutId === undefined) {
         // Race condition. We have already timed out.
         return;

@@ -87,6 +87,8 @@ export function KeypressProvider({
   config?: Config;
   debugKeystrokeLogging?: boolean;
 }) {
+  console.log('!!!! KeypressProvider', { kittyProtocolEnabled });
+
   const { stdin, setRawMode } = useStdin();
   const subscribers = useRef<Set<KeypressHandler>>(new Set()).current;
   const isDraggingRef = useRef(false);
@@ -388,6 +390,7 @@ export function KeypressProvider({
     };
 
     const handleKeypress = (_: unknown, key: Key) => {
+      console.log('!!!! handleKeypress', key);
       if (key.name === 'paste-start') {
         isPaste = true;
         return;
@@ -604,6 +607,7 @@ export function KeypressProvider({
     };
 
     const handleRawKeypress = (data: Buffer) => {
+      console.log('!!!! handleRawKeypress', data);
       const pasteModePrefixBuffer = Buffer.from(PASTE_MODE_PREFIX);
       const pasteModeSuffixBuffer = Buffer.from(PASTE_MODE_SUFFIX);
 

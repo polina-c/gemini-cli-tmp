@@ -7,22 +7,13 @@ const geminiCliPath = 'gemini';
 const geminiCliPathDev =
     '/Users/polinach/_/gemini-cli/packages/cli/dist/index.js';
 
-class GCliProcess {
-  final ValueChanged<String> update;
+class GeminiCliProcess {
+  final ValueChanged<String> onStatusChange;
+  final Stream<String> userMessages;
 
-  GCliProcess(this.update);
+  GeminiCliProcess(this.onStatusChange, this.userMessages);
 
   Future<void> start() async {
-    final envToPass = {
-      ...Platform.environment,
-      'TERM': 'xterm-256color',
-      'GEMINI_CLI_CONTEXT': 'electron',
-      'GEMINI_SESSION_ID': 'a4473c35-7849-4e13-bb51-52b865c21048',
-      'ELECTRON_RUN_AS_NODE': '1',
-      'ITERM_PROFILE': 'Default',
-      'ITERM_SESSION_ID': 'w1t2p0:9B5F9DEB-0160-4D0C-B2DA-0FA87ED54185',
-    };
-
     try {
       final process = await Process.start(
         includeParentEnvironment: true,
@@ -33,25 +24,30 @@ class GCliProcess {
         [],
       );
 
-      update('started pid: ${process.pid}');
+      onStatusChange('started pid: ${process.pid}');
 
       process.stdin.writeln('input to stdin');
 
       // Read output from the tool
       _subscribe(process.stdout, (message) {
-        update('Stdout: $message');
+        onStatusChange('stdout: $message');
       });
 
       // Handle errors from the tool
       _subscribe(process.stderr, (message) {
-        update('Stderr: $message');
+        onStatusChange('stderr: $message');
+        print('stderr: $message');
+      });
+
+      userMessages.listen((message) {
+        process.stdin.writeln(message);
       });
 
       final code = await process.exitCode;
 
-      update('Process exited with code $code');
+      onStatusChange('Process exited with code $code');
     } catch (e) {
-      update('Failed to start process: $e');
+      onStatusChange('Failed to start process: $e');
     }
   }
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ffui/widgets/chat_box.dart';
 import 'package:flutter/material.dart';
 
 import 'process.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const MyHomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -33,9 +35,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final _gcli = GCliProcess(_updateStatus);
+  late final _gcli = GeminiCliProcess(_updateStatus, _onUserMessage.stream);
   final _status = ValueNotifier<String>('');
   final _scrollController = ScrollController();
+  final _onUserMessage = StreamController<String>.broadcast();
 
   @override
   void initState() {
@@ -51,29 +54,51 @@ class _MyHomePageState extends State<MyHomePage> {
     await _gcli.start();
   }
 
+  void _sendMessage(String message) {
+    _onUserMessage.sink.add('$message\n');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text(_title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.clear),
+            tooltip: 'Clear',
+            onPressed: () {
+              _status.value = '';
+              setState(() {});
+            },
+          ),
+        ],
       ),
-      body: Center(
-        child: SelectionArea(
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            child: ValueListenableBuilder<String>(
-              valueListenable: _status,
-              builder: (context, value, child) {
-                unawaited(_scheduleScrollToBottom(_scrollController));
-                return Text(
-                  value,
-                  style: Theme.of(context).textTheme.headlineMedium,
-                );
-              },
+      body: Column(
+        children: [
+          Expanded(
+            child: SelectionArea(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: ValueListenableBuilder<String>(
+                  valueListenable: _status,
+                  builder: (context, value, child) {
+                    unawaited(_scheduleScrollToBottom(_scrollController));
+                    return Text(
+                      value,
+                      // style: Theme.of(context).textTheme.headlineMedium,
+                    );
+                  },
+                ),
+              ),
             ),
           ),
-        ),
+          ChatBox(
+            isProcessing: ValueNotifier<bool>(false),
+            onSend: _sendMessage,
+          ),
+        ],
       ),
     );
   }

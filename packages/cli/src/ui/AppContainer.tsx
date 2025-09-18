@@ -223,6 +223,7 @@ export const AppContainer = (props: AppContainerProps) => {
     }
   }, []);
 
+  console.log('!!! invoking useTextBuffer !!!');
   const buffer = useTextBuffer({
     initialText: '',
     viewport: { height: 10, width: inputWidth },
