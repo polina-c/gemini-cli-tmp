@@ -487,8 +487,11 @@ export async function loadCliConfig(
     approvalMode = ApprovalMode.DEFAULT;
   }
 
-  const interactive =
-    !!argv.promptInteractive || (process.stdin.isTTY && question.length === 0);
+  const interactive = true;
+  // !!argv.promptInteractive || (process.stdin.isTTY && question.length === 0);
+
+  console.log('!!!! process.stdin', process.stdin);
+
   // In non-interactive mode, exclude tools that require a prompt.
   const extraExcludes: string[] = [];
   if (!interactive && !argv.experimentalAcp) {
@@ -549,6 +552,7 @@ export async function loadCliConfig(
     argv.screenReader !== undefined
       ? argv.screenReader
       : (settings.ui?.accessibility?.screenReader ?? false);
+
   return new Config({
     sessionId,
     embeddingModel: DEFAULT_GEMINI_EMBEDDING_MODEL,

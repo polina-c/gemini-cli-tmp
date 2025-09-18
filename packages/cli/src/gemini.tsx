@@ -221,15 +221,19 @@ export async function main() {
   if (config.isInteractive() && !wasRaw) {
     // Set this as early as possible to avoid spurious characters from
     // input showing up in the output.
-    process.stdin.setRawMode(true);
+    // console.log('!!! setting raw !!!, process.stdin:', process.stdin);
 
-    // This cleanup isn't strictly needed but may help in certain situations.
-    process.on('SIGTERM', () => {
-      process.stdin.setRawMode(wasRaw);
-    });
-    process.on('SIGINT', () => {
-      process.stdin.setRawMode(wasRaw);
-    });
+    // process.stdin.setRawMode(true);
+
+    // console.log('!!! done');
+
+    // // This cleanup isn't strictly needed but may help in certain situations.
+    // process.on('SIGTERM', () => {
+    //   process.stdin.setRawMode(wasRaw);
+    // });
+    // process.on('SIGINT', () => {
+    //   process.stdin.setRawMode(wasRaw);
+    // });
 
     // Detect and enable Kitty keyboard protocol once at startup.
     kittyProtocolDetectionComplete = detectAndEnableKittyProtocol();

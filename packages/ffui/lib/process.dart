@@ -28,7 +28,7 @@ class GCliProcess {
         includeParentEnvironment: true,
         // environment: envToPass,
         mode: ProcessStartMode.normal,
-        runInShell: false,
+        runInShell: true,
         geminiCliPathDev,
         [],
       );
