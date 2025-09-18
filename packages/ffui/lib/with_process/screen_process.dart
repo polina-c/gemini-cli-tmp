@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:ffui/widgets/chat_box.dart';
+import 'package:ffui/primitives/chat_box.dart';
 import 'package:flutter/material.dart';
 
-import '../process.dart';
+import 'process.dart';
 
 class ChatWithProcess extends StatefulWidget {
   const ChatWithProcess({super.key, required this.title});

@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:ffui/widgets/chat_box.dart';
+import 'package:ffui/primitives/chat_box.dart';
 import 'package:flutter/material.dart';
 
-import '../process.dart';
+import '../with_process/process.dart';
 
-class ChatWithProcess extends StatefulWidget {
-  const ChatWithProcess({super.key, required this.title});
+class ChatWithA2A extends StatefulWidget {
+  const ChatWithA2A({super.key, required this.title});
 
   final String title;
 
   @override
-  State<ChatWithProcess> createState() => _ChatWithProcessState();
+  State<ChatWithA2A> createState() => _ChatWithA2AState();
 }
 
-class _ChatWithProcessState extends State<ChatWithProcess> {
+class _ChatWithA2AState extends State<ChatWithA2A> {
   late final _gcli = GeminiCliProcess(_updateStatus, _onUserMessage.stream);
   final _status = ValueNotifier<String>('');
   final _scrollController = ScrollController();
