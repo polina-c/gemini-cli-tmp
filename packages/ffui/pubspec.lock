@@ -4,11 +4,9 @@ packages:
   a2a:
     dependency: "direct main"
     description:
-      path: "."
-      ref: fix
-      resolved-ref: e41424d9da54dda991f66d1f54215e50a45293f2
-      url: "https://github.com/polina-c/shamblett-a2a.git"
-    source: git
+      path: "../../../shamblett-a2a"
+      relative: true
+    source: path
     version: "2.4.0"
   ansicolor:
     dependency: transitive

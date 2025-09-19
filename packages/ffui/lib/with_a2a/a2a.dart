@@ -259,3 +259,39 @@ Future<void> _spikeStreaming() async {
 
   // return 0;
 }
+
+const message = '''
+{
+  "tool_call_id": "tool-call-12345",
+  "status": "PENDING",
+  "tool_name": "Edit",
+  "description": "The agent wants to modify a file.",
+  "input_parameters": {
+    "file_path": "/path/to/project/src/main.py",
+    "new_content": "print(\"Hello, Gemini!\")\n"
+  },
+  "confirmation_request": {
+    "options": [
+      {
+        "id": "proceed_once",
+        "name": "Allow Once",
+        "description": "Allow the agent to make this change one time."
+      },
+      {
+        "id": "cancel",
+        "name": "Reject",
+        "description": "Do not allow the agent to make this change."
+      }
+    ],
+    "details": {
+      "file_edit_details": {
+        "file_name": "main.py",
+        "file_path": "/path/to/project/src/main.py",
+        "old_content": "print(\"Hello, World!\")\n",
+        "new_content": "print(\"Hello, Gemini!\")\n",
+        "formatted_diff": "--- a/src/main.py\n+++ b/src/main.py\n@@ -1 +1 @@\n-print(\"Hello, World!\")\n+print(\"Hello, Gemini!\")\n"
+      }
+    }
+  }
+}
+''';
