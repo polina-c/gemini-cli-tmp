@@ -10,7 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  a2a: ^2.4.0
+  a2a:
+    git:
+      url: https://github.com/polina-c/shamblett-a2a.git
+      ref: main
 
 dev_dependencies:
   flutter_test:
