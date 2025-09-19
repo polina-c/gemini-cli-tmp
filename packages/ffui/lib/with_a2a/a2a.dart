@@ -9,12 +9,12 @@ class A2aToGeminiCli {
   final ValueChanged<String> onStatusChange;
   final Stream<String> userMessages;
 
-  Future<int> start() async {
-    return _spike();
+  Future<void> start() async {
+    await _spikeStreaming();
   }
 }
 
-Future<int> _spike() async {
+Future<void> _spike() async {
   const baseUrl = 'http://localhost:41242';
 
   print('A2AClient Example');
@@ -83,7 +83,6 @@ Future<int> _spike() async {
     );
     print('');
     print('A2AClient Example Complete with error');
-    return -1;
   }
 
   /// No error so we have a success response
@@ -101,7 +100,7 @@ Future<int> _spike() async {
     print('No artifacts have been returned by the agent');
     print('');
     print('A2AClient Example Complete with no response');
-    return -1;
+    return;
   }
 
   /// Get the part, we know its a text part
@@ -119,7 +118,7 @@ Future<int> _spike() async {
   /// Complete
   print('A2AClient Example Complete');
 
-  return 0;
+  return;
 }
 
 Future<void> _spikeStreaming() async {

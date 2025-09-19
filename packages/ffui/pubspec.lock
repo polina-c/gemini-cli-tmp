@@ -5,8 +5,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
-      resolved-ref: "1dfc8c1adfb68e1ae16f19a473182602d91e4570"
+      ref: fix
+      resolved-ref: e41424d9da54dda991f66d1f54215e50a45293f2
       url: "https://github.com/polina-c/shamblett-a2a.git"
     source: git
     version: "2.4.0"
