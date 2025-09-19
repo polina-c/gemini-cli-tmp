@@ -4,10 +4,11 @@ packages:
   a2a:
     dependency: "direct main"
     description:
-      name: a2a
-      sha256: d34c9587e82150087328b99060319755c6ab8843233ceeb4dce84f21a19d8640
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: main
+      resolved-ref: "1dfc8c1adfb68e1ae16f19a473182602d91e4570"
+      url: "https://github.com/polina-c/shamblett-a2a.git"
+    source: git
     version: "2.4.0"
   ansicolor:
     dependency: transitive
