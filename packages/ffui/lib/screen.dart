@@ -25,7 +25,7 @@ class _ChatWithA2AState extends State<ChatWithA2A> {
   }
 
   void _onResponse(String update) {
-    _status.value += '\n$update';
+    _status.value += '\n\n$update';
   }
 
   @override
