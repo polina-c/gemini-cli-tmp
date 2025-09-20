@@ -5,26 +5,23 @@ import 'package:flutter/widgets.dart';
 
 class A2aToGeminiCli {
   A2aToGeminiCli(
-    this.onStatusChange,
-    this.userMessages, {
+    this.onResponse, {
     required this.baseUrl,
     required this.agentCardUrl,
   });
 
   final String baseUrl;
   final String agentCardUrl;
-  final ValueChanged<String> onStatusChange;
-  final Stream<String> userMessages;
+  final ValueChanged<String> onResponse;
+  final ValueNotifier<StreamSubscription<A2ASendStreamMessageResponse>?>
+  response = ValueNotifier(null);
 
   late final A2AClient _client = A2AClient(baseUrl, agentCardUrl);
-  StreamSubscription? _subscription;
 
   Future<void> sendMessage(String message) async {
-    final completer = Completer<void>();
     final a2aMessage = A2AMessage()
       ..role = 'user'
-      // TODO: generate a real messageId
-      ..messageId = '12345'
+      ..messageId = DateTime.now().millisecondsSinceEpoch.toString()
       ..parts = [A2ATextPart()..text = message];
 
     final configuration = A2AMessageSendConfiguration()
@@ -38,13 +35,11 @@ class A2aToGeminiCli {
     final Stream<A2ASendStreamMessageResponse> rpcResponse = _client
         .sendMessageStream(payload);
 
-    _subscription = rpcResponse.listen(
+    response.value = rpcResponse.listen(
       (A2ASendStreamMessageResponse data) {
         if (data.isError) {
           final error = data as A2AJSONRPCErrorResponseSSM;
-          onStatusChange(
-            'Received error: ${(error.error as dynamic)?.message}',
-          );
+          onResponse('Received error: ${(error.error as dynamic)?.message}');
           return;
         }
         final response = data as A2ASendStreamMessageSuccessResponse;
@@ -55,7 +50,7 @@ class A2aToGeminiCli {
             if (artifact.parts.isNotEmpty) {
               final part = artifact.parts.first;
               if (part is A2ATextPart) {
-                onStatusChange(part.text);
+                onResponse('A2A task received: {part.text}');
               }
             }
           }
@@ -66,30 +61,25 @@ class A2aToGeminiCli {
               message.parts!.isNotEmpty) {
             final part = message.parts!.first;
             if (part is A2ATextPart) {
-              onStatusChange(part.text);
+              onResponse(part.text);
             }
           }
         }
       },
       onError: (error) {
-        onStatusChange('Received error: $error');
-        if (!completer.isCompleted) {
-          completer.complete();
-        }
+        print('Received error: $error');
+        cancel();
       },
       onDone: () {
-        if (!completer.isCompleted) {
-          completer.complete();
-        }
+        cancel();
       },
       cancelOnError: true,
     );
-    return completer.future;
   }
 
   void cancel() {
-    _subscription?.cancel();
-    _subscription = null;
+    response.value?.cancel();
+    response.value = null;
   }
 }
 
