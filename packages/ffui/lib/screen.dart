@@ -18,6 +18,12 @@ class _ChatWithA2AState extends State<ChatWithA2A> {
   final _status = ValueNotifier<String>('');
   final _scrollController = ScrollController();
 
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_gcli.card().then(_onResponse));
+  }
+
   void _onResponse(String update) {
     _status.value += '\n$update';
   }

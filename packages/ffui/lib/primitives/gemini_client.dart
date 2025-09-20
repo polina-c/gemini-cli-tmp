@@ -8,12 +8,33 @@ class GeminiClient {
 
   final ValueChanged<String> onResponse;
   final ValueNotifier<bool> isProcessing = ValueNotifier(false);
+
+  final _configuration = A2AMessageSendConfiguration()
+    ..acceptedOutputModes = ['text', 'text/event-stream']
+    ..blocking = true;
   StreamSubscription<A2ASendStreamMessageResponse>? _subscription;
 
   late final A2AClient _client = A2AClient(
     'http://localhost:41242',
     'http://localhost:41242/.well-known/agent-card.json',
   );
+
+  Future<String> card() async {
+    try {
+      final agentCard = await _client.getAgentCard();
+      final streaming = agentCard.capabilities.streaming! ? 'Yes' : 'No';
+      return '''
+Agent name: ${agentCard.name}
+Agent description: ${agentCard.description}
+Agent version: ${agentCard.version}
+Is the agent streaming capable: $streaming
+Default input modes: ${agentCard.defaultInputModes}
+Default output modes: ${agentCard.defaultOutputModes}
+Service endpoint: ${agentCard.url}''';
+    } catch (e) {
+      return 'Failed to fetch the agent card, ${e.runtimeType}: $e';
+    }
+  }
 
   void sendMessage(String message) {
     print('sendMessage: $message');
@@ -25,16 +46,12 @@ class GeminiClient {
 
     final a2aMessage = A2AMessage()
       ..role = 'user'
-      ..messageId = DateTime.now().millisecondsSinceEpoch.toString()
+      ..messageId = '12345'
       ..parts = [A2ATextPart()..text = message];
-
-    final configuration = A2AMessageSendConfiguration()
-      ..acceptedOutputModes = ['text', 'text/event-stream']
-      ..blocking = true;
 
     final payload = A2AMessageSendParams()
       ..message = a2aMessage
-      ..configuration = configuration;
+      ..configuration = _configuration;
 
     final Stream<A2ASendStreamMessageResponse> rpcResponse = _client
         .sendMessageStream(payload);
