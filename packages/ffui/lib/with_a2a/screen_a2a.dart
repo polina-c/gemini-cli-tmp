@@ -16,7 +16,12 @@ class ChatWithA2A extends StatefulWidget {
 }
 
 class _ChatWithA2AState extends State<ChatWithA2A> {
-  late final _gcli = A2aToGeminiCli(_updateStatus, _onUserMessage.stream);
+  late final _gcli = A2aToGeminiCli(
+    _updateStatus,
+    _onUserMessage.stream,
+    baseUrl: 'http://localhost:41242',
+    agentCardUrl: 'http://localhost:41242/.well-known/agent-card.json',
+  );
   final _status = ValueNotifier<String>('');
   final _scrollController = ScrollController();
   final _onUserMessage = StreamController<String>.broadcast();
