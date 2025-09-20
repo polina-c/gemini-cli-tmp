@@ -38,7 +38,12 @@ class _ChatBoxState extends State<ChatBox> {
                 ),
               ),
               if (isProcessing)
-                CircularProgressIndicator()
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  width: 48,
+                  height: 48,
+                  child: CircularProgressIndicator(),
+                )
               else
                 IconButton(
                   icon: const Icon(Icons.send),
