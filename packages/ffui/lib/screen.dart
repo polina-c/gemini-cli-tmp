@@ -15,7 +15,7 @@ class ChatWithA2A extends StatefulWidget {
 
 class _ChatWithA2AState extends State<ChatWithA2A> {
   late final _gcli = GeminiClient(_onResponse);
-  final _status = ValueNotifier<String>('');
+  final _chat = ValueNotifier<String>('');
   final _scrollController = ScrollController();
 
   @override
@@ -25,7 +25,7 @@ class _ChatWithA2AState extends State<ChatWithA2A> {
   }
 
   void _onResponse(String update) {
-    _status.value += '\n\n$update';
+    _chat.value += '\n\nagent: $update';
   }
 
   @override
@@ -39,7 +39,7 @@ class _ChatWithA2AState extends State<ChatWithA2A> {
             icon: const Icon(Icons.clear),
             tooltip: 'Clear',
             onPressed: () {
-              _status.value = '';
+              _chat.value = '';
               setState(() {});
             },
           ),
@@ -52,7 +52,7 @@ class _ChatWithA2AState extends State<ChatWithA2A> {
               child: SingleChildScrollView(
                 controller: _scrollController,
                 child: ValueListenableBuilder<String>(
-                  valueListenable: _status,
+                  valueListenable: _chat,
                   builder: (context, value, child) {
                     unawaited(_scheduleScrollToBottom(_scrollController));
                     return Text(
@@ -66,7 +66,10 @@ class _ChatWithA2AState extends State<ChatWithA2A> {
           ),
           ChatBox(
             isProcessing: _gcli.isProcessing,
-            onSend: (message) => _gcli.sendMessage(message),
+            onSend: (message) {
+              _chat.value += '\n\nuser: $message';
+              _gcli.sendMessage(message);
+            },
             onCancel: _gcli.cancel,
           ),
         ],

@@ -21,49 +21,37 @@ class _ChatBoxState extends State<ChatBox> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ValueListenableBuilder(
-          valueListenable: widget.isProcessing,
-          builder: (_, isProcessing, _) {
-            if (!isProcessing) return Container();
-            return const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(),
-            );
-          },
-        ),
-
-        ValueListenableBuilder(
-          valueListenable: widget.isProcessing,
-          builder: (context, isProcessing, child) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _textController,
-                      decoration: const InputDecoration(
-                        hintText: 'Type your message...',
-                      ),
-                      onSubmitted: (_) => _sendMessage(),
-                    ),
+    return ValueListenableBuilder(
+      valueListenable: widget.isProcessing,
+      builder: (context, isProcessing, child) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _textController,
+                  decoration: const InputDecoration(
+                    hintText: 'Type your message...',
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: isProcessing ? null : _sendMessage,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: isProcessing ? widget.onCancel : null,
-                  ),
-                ],
+                  onSubmitted: (_) => _sendMessage(),
+                ),
               ),
-            );
-          },
-        ),
-      ],
+              if (isProcessing)
+                CircularProgressIndicator()
+              else
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: isProcessing ? null : _sendMessage,
+                ),
+              IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: isProcessing ? widget.onCancel : null,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
