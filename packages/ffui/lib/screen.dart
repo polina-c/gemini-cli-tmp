@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:ffui/primitives/chat_box.dart';
-import 'package:ffui/with_a2a/gemini_client.dart';
+import 'package:ffui/primitives/gemini_client.dart';
 import 'package:flutter/material.dart';
 
 class ChatWithA2A extends StatefulWidget {
@@ -14,11 +14,7 @@ class ChatWithA2A extends StatefulWidget {
 }
 
 class _ChatWithA2AState extends State<ChatWithA2A> {
-  late final _gcli = GeminiClient(
-    _onResponse,
-    baseUrl: 'http://localhost:41242',
-    agentCardUrl: 'http://localhost:41242/.well-known/agent-card.json',
-  );
+  late final _gcli = GeminiClient(_onResponse);
   final _status = ValueNotifier<String>('');
   final _scrollController = ScrollController();
 

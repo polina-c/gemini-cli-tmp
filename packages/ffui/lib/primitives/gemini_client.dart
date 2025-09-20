@@ -4,21 +4,19 @@ import 'package:a2a/a2a.dart';
 import 'package:flutter/widgets.dart';
 
 class GeminiClient {
-  GeminiClient(
-    this.onResponse, {
-    required this.baseUrl,
-    required this.agentCardUrl,
-  });
+  GeminiClient(this.onResponse);
 
-  final String baseUrl;
-  final String agentCardUrl;
   final ValueChanged<String> onResponse;
   final ValueNotifier<bool> isProcessing = ValueNotifier(false);
   StreamSubscription<A2ASendStreamMessageResponse>? _subscription;
 
-  late final A2AClient _client = A2AClient(baseUrl, agentCardUrl);
+  late final A2AClient _client = A2AClient(
+    'http://localhost:41242',
+    'http://localhost:41242/.well-known/agent-card.json',
+  );
 
   void sendMessage(String message) {
+    print('sendMessage: $message');
     if (isProcessing.value) {
       print('Already processing a message, please wait.');
       return;
@@ -45,7 +43,7 @@ class GeminiClient {
       (A2ASendStreamMessageResponse data) {
         if (data.isError) {
           final error = data as A2AJSONRPCErrorResponseSSM;
-          onResponse('Received error: ${(error.error as dynamic)?.message}');
+          onResponse('Received response error: ${error.error}');
           return;
         }
         final response = data as A2ASendStreamMessageSuccessResponse;
@@ -67,23 +65,25 @@ class GeminiClient {
               message.parts!.isNotEmpty) {
             final part = message.parts!.first;
             if (part is A2ATextPart) {
-              onResponse(part.text ?? '');
+              onResponse(part.text);
             }
           }
         }
       },
       onError: (error) {
-        onResponse('Received error: $error');
-        cancel();
+        print('onError: ${error.runtimeType}: $error');
+        // cancel();
       },
       onDone: () {
+        print('done for $message');
         cancel();
       },
-      cancelOnError: true,
+      // cancelOnError: true,
     );
   }
 
   void cancel() {
+    print('cleaning subscription');
     _subscription?.cancel();
     _subscription = null;
     isProcessing.value = false;

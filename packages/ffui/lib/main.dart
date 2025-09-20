@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:ffui/primitives/chat_box.dart';
-import 'package:ffui/with_process/screen_process.dart';
 import 'package:flutter/material.dart';
 
-import 'with_process/process.dart';
-import 'with_a2a/screen_a2a.dart';
+import 'screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +21,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      // home: const ChatWithProcess(title: _title),
       home: const ChatWithA2A(title: _title),
       debugShowCheckedModeBanner: false,
     );
