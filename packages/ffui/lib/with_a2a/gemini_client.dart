@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:a2a/a2a.dart';
 import 'package:flutter/widgets.dart';
 
-class A2aToGeminiCli {
-  A2aToGeminiCli(
+class GeminiClient {
+  GeminiClient(
     this.onResponse, {
     required this.baseUrl,
     required this.agentCardUrl,
@@ -13,12 +13,18 @@ class A2aToGeminiCli {
   final String baseUrl;
   final String agentCardUrl;
   final ValueChanged<String> onResponse;
-  final ValueNotifier<StreamSubscription<A2ASendStreamMessageResponse>?>
-  response = ValueNotifier(null);
+  final ValueNotifier<bool> isProcessing = ValueNotifier(false);
+  StreamSubscription<A2ASendStreamMessageResponse>? _subscription;
 
   late final A2AClient _client = A2AClient(baseUrl, agentCardUrl);
 
-  Future<void> sendMessage(String message) async {
+  void sendMessage(String message) {
+    if (isProcessing.value) {
+      print('Already processing a message, please wait.');
+      return;
+    }
+    isProcessing.value = true;
+
     final a2aMessage = A2AMessage()
       ..role = 'user'
       ..messageId = DateTime.now().millisecondsSinceEpoch.toString()
@@ -35,7 +41,7 @@ class A2aToGeminiCli {
     final Stream<A2ASendStreamMessageResponse> rpcResponse = _client
         .sendMessageStream(payload);
 
-    response.value = rpcResponse.listen(
+    _subscription = rpcResponse.listen(
       (A2ASendStreamMessageResponse data) {
         if (data.isError) {
           final error = data as A2AJSONRPCErrorResponseSSM;
@@ -50,7 +56,7 @@ class A2aToGeminiCli {
             if (artifact.parts.isNotEmpty) {
               final part = artifact.parts.first;
               if (part is A2ATextPart) {
-                onResponse('A2A task received: {part.text}');
+                onResponse('A2A task received: ${part.text ?? ''}');
               }
             }
           }
@@ -61,13 +67,13 @@ class A2aToGeminiCli {
               message.parts!.isNotEmpty) {
             final part = message.parts!.first;
             if (part is A2ATextPart) {
-              onResponse(part.text);
+              onResponse(part.text ?? '');
             }
           }
         }
       },
       onError: (error) {
-        print('Received error: $error');
+        onResponse('Received error: $error');
         cancel();
       },
       onDone: () {
@@ -78,8 +84,9 @@ class A2aToGeminiCli {
   }
 
   void cancel() {
-    response.value?.cancel();
-    response.value = null;
+    _subscription?.cancel();
+    _subscription = null;
+    isProcessing.value = false;
   }
 }
 

@@ -74,10 +74,10 @@ class _ChatWithProcessState extends State<ChatWithProcess> {
               ),
             ),
           ),
-          ChatBox(
-            isProcessing: ValueNotifier<bool>(false),
-            onSend: _sendMessage,
-          ),
+          // ChatBox(
+          //   isProcessing: ValueNotifier<bool>(false),
+          //   onSend: _sendMessage,
+          // ),
         ],
       ),
     );

@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:ffui/primitives/chat_box.dart';
-import 'package:ffui/with_a2a/a2a.dart';
+import 'package:ffui/with_a2a/gemini_client.dart';
 import 'package:flutter/material.dart';
-
-import '../with_process/process.dart';
 
 class ChatWithA2A extends StatefulWidget {
   const ChatWithA2A({super.key, required this.title});
@@ -16,21 +14,16 @@ class ChatWithA2A extends StatefulWidget {
 }
 
 class _ChatWithA2AState extends State<ChatWithA2A> {
-  late final _gcli = A2aToGeminiCli(
-    _updateStatus,
-    _onUserMessage,
+  late final _gcli = GeminiClient(
+    _onResponse,
     baseUrl: 'http://localhost:41242',
     agentCardUrl: 'http://localhost:41242/.well-known/agent-card.json',
   );
   final _status = ValueNotifier<String>('');
   final _scrollController = ScrollController();
 
-  void _updateStatus(String update) {
+  void _onResponse(String update) {
     _status.value += '\n$update';
-  }
-
-  void _sendMessage(String message) {
-    _onUserMessage.sink.add('$message\r\n\r\n');
   }
 
   @override
@@ -70,8 +63,9 @@ class _ChatWithA2AState extends State<ChatWithA2A> {
             ),
           ),
           ChatBox(
-            isProcessing: ValueNotifier<bool>(false),
-            onSend: _sendMessage,
+            isProcessing: _gcli.isProcessing,
+            onSend: (message) => _gcli.sendMessage(message),
+            onCancel: _gcli.cancel,
           ),
         ],
       ),
