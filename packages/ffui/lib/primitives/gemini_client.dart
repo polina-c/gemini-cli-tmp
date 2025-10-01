@@ -47,7 +47,8 @@ Service endpoint: ${agentCard.url}''';
     final a2aMessage = A2AMessage()
       ..role = 'user'
       ..messageId = '12345'
-      ..parts = [A2ATextPart()..text = message];
+      ..parts = [A2ATextPart()..text = message]
+      ..extensions;
 
     final payload = A2AMessageSendParams()
       ..message = a2aMessage

@@ -1,16 +1,29 @@
 # ffui
 
-A new Flutter project.
+Flutter Framework UI for Gemini CLI.
 
-## Getting Started
+## Start
 
-This project is a starting point for a Flutter application.
+In VS Code, open [gemini-cli][https://github.com/google-gemini/gemini-cli] and:
 
-A few resources to get you started if this is your first Flutter project:
+1.  Compile code:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+    ```
+    npm install
+    npm run build
+    ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2.  Start A2A server of GeminiCLI,
+
+    ```
+    npm run start:a2a-server
+    ```
+
+3.  Start flutter app:
+
+    ```
+    cd packages/ffui
+    flutter run -d macos
+    ```
+
+4.  Chat with the agent assuming it has access only to the repo files, and onl in sandbox. For example, ask to tweak `packages/a2a-server/src/types.ts`
