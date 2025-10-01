@@ -4,7 +4,7 @@ Flutter Framework UI for Gemini CLI.
 
 ## Start
 
-In VS Code, open [gemini-cli][https://github.com/google-gemini/gemini-cli] and:
+In VS Code, open [this fork of gemini-cli](https://github.com/polina-c/gemini-cli/tree/for-ff) and:
 
 1.  Compile code:
 
