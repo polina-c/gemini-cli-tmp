@@ -65,6 +65,54 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: _DashboardList(
+            dashboardNames: widget.controller._dashboards.keys.toList(),
+            updated: widget.controller._updated,
+            selection: widget.controller._selection,
+          ),
+        ),
+        const VerticalDivider(width: 1),
+        Expanded(
+          flex: 3,
+          child: widget.controller._selection != null
+              ? _GenUiView(
+                  widget.controller._dashboards[widget.controller._selection]!,
+                )
+              : const Center(child: Icon(Icons.dashboard)),
+        ),
+      ],
+    );
+  }
+}
+
+class _GenUiView extends StatelessWidget {
+  const _GenUiView(this.genUi);
+
+  final GenUi genUi;
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+class _DashboardList extends StatelessWidget {
+  _DashboardList({
+    required this.dashboardNames,
+    required this.updated,
+    required this.selection,
+  });
+
+  final List<String> dashboardNames;
+  final Set<String> updated;
+  final String? selection;
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
