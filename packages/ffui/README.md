@@ -26,4 +26,6 @@ In VS Code, open [gemini-cli][https://github.com/google-gemini/gemini-cli] and:
     flutter run -d macos
     ```
 
-4.  Chat with the agent assuming it has access only to the repo files, and onl in sandbox. For example, ask to tweak `packages/a2a-server/src/types.ts`
+4.  Chat with the agent assuming it has access only to the repo files,
+    and only in sandbox. For example,
+    ask to tweak `packages/a2a-server/src/types.ts`.
